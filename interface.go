@@ -93,3 +93,16 @@ func InterfaceAddrs() ([]Addr, error) {
 func InterfaceByIndex(index int) (*Interface, error) {
 	return nil, errors.New("InterfaceByIndex not implemented")
 }
+
+// Addrs returns a list of unicast interface addresses for a specific
+// interface.
+func (ifi *Interface) Addrs() ([]Addr, error) {
+	if ifi == nil {
+		return nil, &OpError{Op: "route", Net: "ip+net", Source: nil, Addr: nil, Err: errInvalidInterface}
+	}
+	ifat, err := interfaceAddrTable(ifi)
+	if err != nil {
+		err = &OpError{Op: "route", Net: "ip+net", Source: nil, Addr: nil, Err: err}
+	}
+	return ifat, err
+}
